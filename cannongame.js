@@ -7,7 +7,9 @@ var gun={
 		w:70,
 		h:20
 }
+var rate=9;
 var bu=[];
+var lim=150;
 var score={
 		val:0,
 		id:'Game '
@@ -31,6 +33,11 @@ ctx.fillRect(0,0,600,900);
 function scr()
 {
   score.val=bu.length;
+  if(score.val>lim)
+	  {
+	  rate--;
+	  lim+=150;
+	  }
   ctx.fillStyle='white';
   ctx.font='28px serif';
   ctx.textBaseline='middle';
@@ -206,8 +213,11 @@ function over()
 		    pos+=25;
 		}
 	pos+=25;
+	ctx.fillText('Click to Restart',300,pos);
 	console.log(point);
-		cancelAnimationFrame();
+	canvas.addEventListener('click',function(){
+		location.reload();});
+		cancelAnimationFrame();		
 }
 
 function gunColl(circle)
@@ -225,12 +235,13 @@ function gunColl(circle)
 			return false;
 		
 }
+
 function draw()
 {  
 	a++;
 	bgDraw();
 	cannonDraw();
-	if(a%8==0)
+	if(a%rate==0)
 	genBu();
 	bulletDraw();
 	if(a%350==0)
