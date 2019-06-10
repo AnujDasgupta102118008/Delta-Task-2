@@ -1,6 +1,5 @@
 var canvas = document.getElementById("canvas");
 var ctx=canvas.getContext('2d');
-
 var gun={
 		x:265,
 		y:670,
@@ -14,7 +13,7 @@ var score={
 		val:0,
 		id:'Game '
 };
-var colors=['red','yellow','orange','green','blue','indigo'];
+var colors=['red','orange','green','blue','indigo','purple'];
 function genBu()
 {
 var bullet={
@@ -25,11 +24,33 @@ bullet.x=gun.x+35;
 bu.push(bullet);
 };
 
+function menu()
+{
+      bgDraw();
+	  ctx.fillStyle = '#FFF700';
+	  ctx.font = '38px Arial';
+	  ctx.textAlign = 'center';
+	  ctx.fillText('WATCH OUT !!', canvas.width / 2, canvas.height / 4);
+	  ctx.font = '28px Arial';
+	  ctx.fillText('Click to Start', canvas.width / 2, canvas.height / 2);
+	  ctx.font = '24px Arial';
+	  ctx.fillText('CONTROLS-', canvas.width / 2, (canvas.height / 4) * 3);
+	  ctx.fillText('1.Left arrow / A for left movement', canvas.width / 2, ((canvas.height / 4) * 3)+30);
+	  ctx.fillText('2.Right arrow / D for left movement', canvas.width / 2, ((canvas.height / 4) * 3)+60);
+	  canvas.addEventListener('click', start);
+}
+function start()
+{  
+	draw();
+	canvas.removeEventListener('click',start);
+}
+
 function bgDraw()
 {
 ctx.fillStyle="black";
 ctx.fillRect(0,0,600,900);
 }
+var stop=false;
 function scr()
 {
   score.val=bu.length;
@@ -39,9 +60,9 @@ function scr()
 	  lim+=150;
 	  }
   ctx.fillStyle='white';
-  ctx.font='28px serif';
+  ctx.font='24px serif';
   ctx.textBaseline='middle';
-  ctx.fillText('Score: '+score.val,7,17);
+  ctx.fillText('Score: '+score.val,45,17);
 }
 function cannonDraw()
 {   ctx.beginPath();
@@ -51,7 +72,7 @@ function cannonDraw()
 	for(var k=0;k<obs.length;k++)
 		{
 		if(gunColl(obs[k]))
-			over();
+			stop=true;
 		}
 }
 
@@ -95,7 +116,7 @@ function genRock()
 		        dx:2,
 		        dy:6,
 		        color:colors[Math.floor(Math.random()*6)],
-		        strength:Math.floor(Math.random()*200+100)
+		        strength:Math.floor(Math.random()*100+70)
               };
 obs.push(rock);
 }
@@ -105,39 +126,39 @@ function drawRock()
 	for(var j=0;j<obs.length;j++)
 		{
 		  ctx.beginPath();
-		  ctx.arc(obs[j].x,obs[j].y,(obs[j].strength)*0.1,0,2*Math.PI);
+		  ctx.arc(obs[j].x,obs[j].y,(obs[j].strength)*0.3,0,2*Math.PI);
 		  ctx.fillStyle=obs[j].color;
 		  ctx.fill();
 		  ctx.closePath();
 		  ctx.fillStyle='white';
 		  ctx.textBaseline='middle';
-		  ctx.font='28px Arial';
-		  ctx.fillText(obs[j].strength,obs[j].x-20,obs[j].y);
+		  ctx.font='22px Arial';
+		  ctx.fillText(obs[j].strength,obs[j].x-5,obs[j].y);
 		
-     if(obs[j].x+(obs[j].strength)*0.1>=0 )
+     if(obs[j].x+(obs[j].strength)*0.3>=0 )
     	 {
     	 obs[j].x+=obs[j].dx;
     	 obs[j].y+=obs[j].dy;
     	 }
-     else if(obs[j].x-(obs[j].strength)*0.1<=0)
+     else if(obs[j].x-(obs[j].strength)*0.3<=0)
      { 
      console.log("in new else");
      obs[j].dx*=-1;
      obs[j].x+=obs[j].dx;     
      }
      
-     if(obs[j].x+(obs[j].strength)*0.1>600)
+     if(obs[j].x+(obs[j].strength)*0.3>600)
      { obs[j].dx*=-1;
      obs[j].x+=obs[j].dx;
      obs[j].y+=obs[j].dy;
      }
      
-     if(obs[j].y-(obs[j].strength)*0.1<=0)
+     if(obs[j].y-(obs[j].strength)*0.3<=0)
 		{obs[j].dy*=-0.6;
 		obs[j].y+=obs[j].dy;
 		}
     		
-	if(obs[j].y+(obs[j].strength)*0.1>=700)
+	if(obs[j].y+(obs[j].strength)*0.3>=700)
 		{obs[j].dy*=-0.7;
 		obs[j].y+=obs[j].dy;
 		}
@@ -160,7 +181,7 @@ function bulletColl()
 	for(var i=0;i<obs.length;i++)
 		{
 		     for(var j=0;j<bu.length;j++)
-		    	 {   var sumofradii=(obs[i].strength*0.1)+bu[j].radius ;
+		    	 {   var sumofradii=(obs[i].strength*0.3)+bu[j].radius ;
 		    	     var dcX=obs[i].x-bu[j].x;
 		    	     var dcY=obs[i].y-bu[j].y;
 		    	     if(dcX*dcX + dcY*dcY <= sumofradii*sumofradii)
@@ -213,22 +234,23 @@ function over()
 		    pos+=25;
 		}
 	pos+=25;
-	ctx.fillText('Click to Restart',300,pos);
+	ctx.fillText('Click to go back to Main Menu',300,pos);
 	console.log(point);
 	canvas.addEventListener('click',function(){
-		location.reload();});
-		cancelAnimationFrame();		
+		if(confirm('Do you want to clear your past scores ?'))
+			localStorage.clear();
+		location.reload();});	
 }
 
 function gunColl(circle)
 {
 	
-		if(circle.y+circle.strength*0.1>=670)
+		if(circle.y+circle.strength*0.3>=670)
 			{
-			    if(circle.x>gun.x && (circle.x+circle.strength*0.1)<=gun.x+70)
+			    if(circle.x>gun.x && (circle.x+circle.strength*0.3)<=gun.x+70)
 			    	return true;
 			    else
-			    	if(circle.x>gun.x && (circle.x-circle.strength*0.1)<=gun.x+70)
+			    	if(circle.x>gun.x && (circle.x-circle.strength*0.3)<=gun.x+70)
 			    		return true;
 			}
 		else
@@ -249,7 +271,13 @@ function draw()
 	bulletColl();
 	drawRock();
 	scr();
+	if(!stop)
 	g=requestAnimationFrame(draw);
+	else
+		{
+		over();
+		canceAnimationFrame(g);
+		}
 }
-draw();
+menu();
 canvas.focus();
