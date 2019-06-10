@@ -1,9 +1,34 @@
 #canvas{
 	
-	margin-left:450px;
+	margin-left:30%;
 }
 #cont{
-	
 	margin-top:5px;
 	text-align : center;
+}
+@media screen and (max-width:1000px)
+{
+	#cont{
+	margin-top:5px;
+	text-align : center;
+}
+
+#canvas{
+	
+	margin-left:10%;
+}
+	
+}
+
+@media screen and (max-width:620px)
+{
+	#cont{
+	margin-top:5px;
+	text-align : center;
+}
+
+#canvas{
+margin:3px auto;
+}
+	
 }
